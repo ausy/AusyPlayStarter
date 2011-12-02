@@ -18,8 +18,8 @@ import play.exceptions.UnexpectedException;
 
 /**
  * Check which proof if one or a set of properties is unique.
- * 
  */
+@SuppressWarnings({"serial", "rawtypes"})
 public class UniqueCheck extends AbstractAnnotationCheck<Unique> {
 
 	final static String mes = "validation.unique";
