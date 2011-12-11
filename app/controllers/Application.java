@@ -1,12 +1,15 @@
 package controllers;
 
-import service.FakeService;
+import javax.inject.Inject;
+
+import service.IFakeService;
 
 
 
 public class Application extends LoggedApplication {
 
-	public static FakeService fakeService;
+	@Inject
+	public static IFakeService fakeService;
 	
 	public static void index() {
 		render();

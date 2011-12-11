@@ -21,7 +21,7 @@ les appeler toutes les deux pour le sous-menu "Tous". Le service créé a été 
 /**
  * A service related to Loan, used to centralize business logic.
  */
-public class LoanService {
+public class LoanService implements ILoanService {
 
 	/**
 	 * Gets the book the connected user have borrowed.
@@ -65,7 +65,7 @@ public class LoanCtrl extends LoggedApplication {
 	 * Here is the loanService injected by Guice.
 	 */
 	@Inject
-	public static LoanService loanService;
+	public static ILoanService loanService;
 	
 	public static void input() {
 		List&lt;OwnedBook&gt; inputs = loanService.getInput(getConnectedUser());
@@ -115,46 +115,28 @@ require:
 
 <p>
 Maintenant que le module est installé, on va pouvoir l'utiliser. Pour cela il suffit de suivre la documentation du module et donc de créer une classe
-étendant <em>GuicySupport</em>. Cette classe ne fait que déclarer les classes qui vont contenir les configurations de dépendance. Nous avons
-appelé cette classe <em>Guicy</em>.
-</p>
-
-<pre class="prettyprint">
-/**
- * Class needed to activate Guice
- */
-public class Guicy extends GuiceSupport {
-	
-	@Override
-	protected Injector configure() {
-		return Guice.createInjector(
-				new BDManagerModule()
-		);
-	}
-}
-</pre>
-
-<p>
-Comme notre projet n'est pas très gros, nous ne déclarons qu'une seule classe de configuration <em>BDManagerModule</em> : 
-</p>
+étendant <em>AbstractModule</em> :
 
 <pre class="prettyprint">
 /**
  * Contains Guice configuration.
  */
-public class BDManagerModule extends AbstractModule{
+public class BDManagerModule extends AbstractModule {
 
 	@Override
 	protected void configure() {
-		this.requestStaticInjection(LoanCtrl.class);
-		this.bind(LoanService.class);
+		this.bind(ILoanService.class).to(LoanService.class);
 	}
 }
 
 </pre>
 
-<p>Cette classe, qui doit étendre <em>AbstractModule</em> déclare les services injectables et précise que pour la classe <em>LoanCtrl</em>
-l'injection est faite sur des attributs <em>static</em> (ce qui correspond bien à notre cas). Il n'y a plus qu'à vérifier que l'attribut 
-<em>static</em> de type <em>LoanService</em> est bien annotée avec <code>@Inject</code> pour que tout soit bien configuré.
-<br /> Et voilà ! Lorsque notre controlleur sera créé, son attribut <em>LoanService</em> sera automatiquement injecté par Guice.
+<p>Cette classe déclare les services injectables et précise pour chaque interface l'implémentation
+à utiliser (à noter que si vous n'utilisez pas d'interface, vous n'avez rien à <em>binder</em> ici). Il n'y a plus qu'à vérifier que l'attribut 
+<em>static</em> de type <em>ILoanService</em> est bien annotée avec <code>@Inject</code> pour que tout soit bien configuré (cf. plus haut).
+<br /> Et voilà ! Lorsque notre controlleur sera créé, son attribut <em>loanService</em> sera automatiquement injecté par Guice.
+</p>
+<p>
+<span class="label important">Attention</span> : l'annotation <code>@Inject</code> doit être <code>javax.inject.Inject</code> et non pas
+<code>com.google.inject.Inject</code>
 </p>
