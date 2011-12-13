@@ -1,7 +1,7 @@
 <h2>La page de login</h2>
-
+<br />
 <img alt="Page de login" src="@{'/public/images/login.png'}"/>
-
+<br />
 <p>La page de login est en fait complètement générée par le module <em>Secure</em> qui est packagé avec la distribution de <b>Play!</b>. 
 Pour activer ce module il suffit d'indiquer que le projet dépend de ce module dans le fichier de dépendance <em>dependencies.yml</em> :
 </p>
@@ -48,7 +48,8 @@ public class Security extends Secure.Security {
 	 * {@inheritDoc}
 	 */
 	 static boolean check(final String profile) {
-		 if(Security.isConnected() && (Security.connected().contains("tardella") || Security.connected().contains("chenais"))) {
+		 if(Security.isConnected() && (Security.connected().contains("tardella") || 
+		 		Security.connected().contains("chenais"))) {
 			 return true;
 		 } else {
 			 return false;
@@ -57,36 +58,41 @@ public class Security extends Secure.Security {
 }
 </pre>
 
-<p>
-En définissant cette classe et en surchargeant certaines méthodes on peut ainsi : 
-</p>
+<p>En définissant cette classe et en surchargeant certaines méthodes on peut ainsi :</p>
 <dl>
 	<dt>Indiquer comment se fait l'identification des utilisateurs (méthode <em>authenticate</em>)</dt>
 	<dd>Vous aurez noté que cette méthode est <em>static</em> (comme les suivantes d'ailleurs), ce n'est pas une erreur, c'est ainsi que fonctionne 
 	<b>Play!</b></dd>
+	<br />
 	<dt>Indiquer la page de redirection après identification (méthode <em>onAuthenticated</em>)</dt>
-	<dd>Ici on redirige vers la méthode (toujours <em>static</em>) d'un autre controlleur appelé <em>Collection</em></dd>
+	<dd>Ici on redirige vers la méthode (toujours <em>static</em>) d'un autre controleur appelé <em>Collection</em></dd>
+	<br />
 	<dt>Indiquer comment vérifier si l'utilisateur identifié a bien le profile demandé (méthode <em>check</em>)</dt>
-	<dd>Ici on peut voir que le nom du profil passé en paramètre de la méthode ne rentre pas en ligne de compte, seul le username de l'utilisateur 
+	<dd>Ici on peut voir que le nom du profil passé en paramètre de la méthode n'entre pas en ligne de compte, seul le username de l'utilisateur 
 	est testé et doit contenir "tardella" ou "chenais"</dd>
 </dl>
 
 <p>
 Il suffit alors d'importer les routes du module <em>Secure</em> dans votre application en ajoutant la ligne suivante dans le fichier <em>routes</em>
-(l'explication des routes se fait dans la section suivante).
+(les routes sont traitées dans la section suivante).
 </p>
 
 <p>
-Enfin, pour accéder à cette page de login, il faut pointer sur l'url <code>http://localhost:9000/login</code>. Là vous devez renseigner le 
-login/password suivant : christophe.tardella@gmail.com/secret. Si tous s'est bien passé, vous devriez être redirigé vers l'action 
-<em>Collection.display</em> comme on l'a vu plus haut, c'est à dire vers l'url <code>http://localhost:9000/collections</code> 
-(on verra comment se fait le mapping dans la section suivante)
+Enfin, pour accéder à cette page de login, il faut pointer sur l'url <code><a href="http://localhost:9000/login">http://localhost:9000/login</a></code>. Là, vous devez renseigner le 
+login/password suivant : christophe.tardella@gmail.com/secret. Si tout s'est bien passé, vous devriez être redirigé vers l'action 
+<em>Collection.display</em> comme on l'a vu plus haut, c'est à dire vers l'url <code><a href="http://localhost:9000/collections">http://localhost:9000/collections</a></code> 
+(on verra comment se fait le mapping dans la section suivante).
 </p>
+<div class="alert-message block-message info">
 <p>
-<span class="label notice">Note</span> : Dans sa configuration actuelle, l'application utilise une base de données mémoire, comme l'indique la 
-configuration du fichier <b>application.conf</b> (cf. la ligne <em>db=mem</em>). <br/>
-Au démarrage de l'application, des données sont chargées dans cette base. Ces données sont stockées dans le fichier <em>all.yml</em> et la
-demande de chargement au démarrage est faite dans la classe <code>job.Bootstrap</code> dont le contenu me semble assez explicite 
+<span class="label notice mgr">Note</span> Dans sa configuration actuelle, l'application utilise une base de données en mémoire, comme l'indique la 
+configuration du fichier <b>application.conf</b> (cf. la ligne <em>db=mem</em>).
+</p>
+</div>
+
+<p>
+Au démarrage de l'application, des données sont chargées en base. Ces données initiales sont stockées dans le fichier <em>all.yml</em>. La
+demande de chargement se fait au démarrage par le biais de la classe <code>job.Bootstrap</code> dont le contenu me semble assez explicite 
 (notez l'annotation au niveau de la classe) :
 </p>
 
@@ -102,7 +108,9 @@ public class Bootstrap extends Job&lt;Object&gt; {
 }
 </pre>
 
+<div class="alert-message block-message info">
 <p>
-<span class="label notice">Note</span> : Pour vous déconnecter, il vous suffit de taper l'url <code>/logout</code>. Cette url est définie dans le 
+<span class="label notice mgr">Note</span> Pour se déconnecter, il suffit d'accéder à l'url <code><a href="http://localhost:9000/logout">http://localhost:9000/logout</a></code>. Cette url est définie dans le 
 module <code>Secure</code> et importée comme on l'a vu plus haut. Le module <code>Secure</code> se charge donc de tout...
 </p>
+</div>

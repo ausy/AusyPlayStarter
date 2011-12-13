@@ -1,22 +1,21 @@
-<h2>Les pages "Emprunts"</h2>
+<h2>La page "Emprunts"</h2>
+<br />
 
 <img alt="Sous-Menu Tous" src="@{'/public/images/submenuAll.png'}" width="100%" />
 
 <p>
-Les pages du menu "Emprunts" fonctionnent globalement comme la page "Ma collection" mais l'utilisation du sous-menu "Tous" va nous permettre de mettre 
+La page du menu "Emprunts" fonctionne globalement de la même daçon que la page "Ma collection". Toutefois, l'utilisation du sous-menu "Tous" va nous permettre de mettre 
 en avant l'utilisation et la mise en place du module <b>Guice</b>.
 </p>
 <p>
 Vous avez certainement déjà constaté que le sous-menu "Tous" n'est rien d'autre que la concaténation des deux sous-menus "Entrants" et "Sortants".
 </p>
-
 <p>
-Du coup pour éviter de faire des copier-coller de code nous avons décidé d'exporter les requêtes de récupération des prêts entrants et sortants et de
-les appeler toutes les deux pour le sous-menu "Tous". Le service créé a été appelé <code>LoanService</code> et il est utilisé dans le controlleur 
-<code>LoanCtrl</code>
+Du coup, pour éviter de faire des copier-coller de code nous avons décidé d'exporter les requêtes de récupération des prêts entrants et sortants et de
+les appeler toutes les deux pour le sous-menu "Tous". Le service gérant les emprunts est : <code>LoanService</code>, il est utilisé par le controleur : <code>LoanCtrl</code>.
 </p>
 
-<code>LoanService</code>
+Ci-dessous le code du service  : <code>LoanService</code> :
 <pre class="prettyprint">
 /**
  * A service related to Loan, used to centralize business logic.
@@ -54,7 +53,7 @@ public class LoanService implements ILoanService {
 }
 </pre>
 
-<code>LoanCtrl</code>
+Ci-dessous le code du controleur  : <code>LoanCtrl</code> :
 <pre class="prettyprint">
 /**
  * Controllers for Loan.
@@ -86,17 +85,22 @@ public class LoanCtrl extends LoggedApplication {
 </pre>
 
 <p>
-Normalement rien de doit vous choquer dans le service, ni dans le controlleur. La seule chose un peu étrange c'est
-la propriété <em>static</em> <code>loanService</code> annotée <code>&#64;Inject</code> dans le controlleur. En fait le controlleur ne fait que déclarer
-le service dont il a besoin afin de se le faire "injecter" 
-(Pour ceux qui ne connaisse pas <a href="http://en.wikipedia.org/wiki/Dependency_injection">l'injection de dépendance</a>, 
-il est temps de s'y mettre...).
-<br />
-L'outil dont on va se servir pour injecter ce service est <em>Guice</em>. Avant de pouvoir l'utiliser il va d'abord falloir l'installer et informer 
-<b>Play!</b> que votre application en dépend. Commençons par le deuxième point.
-<br />
-Comme on l'a vu pour le module <em>Secure</em>, pour indiquer une dépendance vers un module (mais c'est vrai aussi pour une librairie quelconque) on
-doit le déclarer dans le fichier <em>dependencies.yml</em>.
+a priori, rien de surprenant dans ce service ou ce controleur. Seule chose un peu étrange, la propriété <em>static</em> <code>loanService</code> annotée <code>&#64;Inject</code> dans le controleur. 
+En fait, le controleur ne fait que déclarer le service dont il a besoin afin qu'il soit "injecté".
+</p>
+
+<div class="alert-message block-message warning">
+<p>
+<span class="label warning mgr">Attention</span> Pour ceux qui ne connaissent pas <a href="http://en.wikipedia.org/wiki/Dependency_injection">l'injection de dépendance</a>, 
+il est temps de s'y mettre...
+</p>
+</div>
+<p>
+L'outil dont on va se servir pour injecter ce service est <em>Guice</em>. Avant de pouvoir l'utiliser, nous devons l'installer et informer 
+<b>Play!</b> que notre application dépend de <em>Guice</em>.
+</p>
+<p>
+Commençons par le deuxième point. Comme on l'a vu pour le module <em>Secure</em>, les dépendance envers un module (mais c'est vrai aussi pour une librairie quelconque) doivent être déclarées dans le fichier <em>dependencies.yml</em>.
 </p>
 
 <pre>
@@ -104,19 +108,20 @@ require:
     - play
     - play -&gt; guice 1.2
 </pre>
+<br />
 <blockquote>
 <small>Au moment où ces lignes sont rédigées la dernière version du module Guice est 1.2</small>
 </blockquote>
-
-<p>Et voilà le premier point réglé ! Pour ce qui est de l'installation c'est encore plus rapide, il suffit de taper la commande
-<code>play dependancies --sync</code>. <b>Play!</b> téléchargera alors le module Guice et l'ajoutera à la liste des modules de votre application 
-(puisque vous avez pris la peine de le déclarer dans les dépendances).
+<br />
+<p>Et voilà la dépendence réglée ! Pour ce qui est de l'installation c'est encore plus rapide, il suffit de taper la commande
+<code>play dependancies --sync</code>. <b>Play!</b> télécharge alors le module <em>Guice</em> et l'ajoute à la liste des modules de l'application 
+(puisque nous avons pris la peine de le déclarer dans les dépendances).
 </p>
 
 <p>
 Maintenant que le module est installé, on va pouvoir l'utiliser. Pour cela il suffit de suivre la documentation du module et donc de créer une classe
 étendant <em>AbstractModule</em> :
-
+</p>
 <pre class="prettyprint">
 /**
  * Contains Guice configuration.
@@ -130,13 +135,18 @@ public class BDManagerModule extends AbstractModule {
 }
 
 </pre>
-
-<p>Cette classe déclare les services injectables et précise pour chaque interface l'implémentation
-à utiliser (à noter que si vous n'utilisez pas d'interface, vous n'avez rien à <em>binder</em> ici). Il n'y a plus qu'à vérifier que l'attribut 
+<br />
+<p>Cette classe déclare les services injectables et précise, pour chaque interface, l'implémentation
+à utiliser (à noter que si vous n'utilisez pas d'interface, vous n'avez rien à <em>binder</em> ici). Il ne reste plus qu'à vérifier que l'attribut 
 <em>static</em> de type <em>ILoanService</em> est bien annotée avec <code>@Inject</code> pour que tout soit bien configuré (cf. plus haut).
-<br /> Et voilà ! Lorsque notre controlleur sera créé, son attribut <em>loanService</em> sera automatiquement injecté par Guice.
 </p>
 <p>
-<span class="label important">Attention</span> : l'annotation <code>@Inject</code> doit être <code>javax.inject.Inject</code> et non pas
+Et voilà ! Lorsque notre controlleur sera créé, son attribut <em>loanService</em> sera automatiquement injecté par <em>Guice</em>.
+</p>
+
+<div class="alert-message block-message warning">
+<p>
+<span class="label warning mgr">Attention</span> L'annotation <code>@Inject</code> doit s'appuyer sur l'import de <code><b>javax.inject.Inject</b></code> et non pas
 <code>com.google.inject.Inject</code>
 </p>
+</div>

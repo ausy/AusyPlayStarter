@@ -1,28 +1,31 @@
 <h2>Play!Framework</h2>
-<p>Avant de commencer à plonger dans l'explication de tel ou tel morceau de code du projet <strong>AusyPlay</strong>, voici une petite présentation
-de l'outil sous-jacent : <strong>Play!Framework</strong> et une explication de ce qui nous a poussés à nous y intéresser.</p>
+<p>Avant de commencer à plonger dans le détail ou le code du projet <strong>AusyPlay</strong>, nous vous proposons une rapide présentation
+de l'outil sous-jacent : <strong>Play!Framework</strong> agrémenté de quelques unes des raisons qui nous ont poussés à nous y intéresser.</p>
 
 <h3>Présentation</h3>
 <p>
-<strong>Play!Framework</strong> est un framework de développement d'application web 
-<a rel="twipsy" href="http://en.wikipedia.org/wiki/Stateless_protocol" target="_blank" data-original-title="Sans utilisation de session">StateLess</a>. 
-L'objectif majeure de cet outil est d'offrir une productivité plus élevée aux développeurs de par sa simplicité et sa facilité d'accès.
+<strong>Play!Framework</strong> est un framework de développement d'applications web 
+<a rel="twipsy" href="http://en.wikipedia.org/wiki/Stateless_protocol" target="_blank" data-original-title="Chaque accès au server est une transaction indépendante et ne tient pas compte des accès précédents">StateLess</a>. 
+L'intéret majeur de cet outil est d'offrir une productivité élevée aux développeurs de par sa simplicité et sa facilité d'accès.
 </p>
 <p>
-Play! fournit un cadre de développement complet allant de la vue à la persitence des données, de plus il propose de nombreux modules, natifs ou 
-crées par la communauté, permettant d'enrichir votre application selon vos besoins.
+Play! fournit un cadre de développement complet allant de la vue à la persitence des données. De plus, Play! propose de nombreux modules, natifs ou 
+créés par la communauté, permettant d'enrichir votre application selon vos besoins.
 </p>
 <p>
 Play! est basé sur le principe de 
-<a rel="twipsy" href="#" target="_blank" data-original-title="Respecter une convention plutôt que de configurer" data-placement="below">
-Convention over Configuration</a> ce qui limite grandement (voir supprime) les longs fichiers de configuration XML que vous connaissez peut-être.
+<a rel="twipsy" href="#" target="_blank" data-original-title="Respecter une convention plutôt que de devoir fournir une configuration" data-placement="below">
+Convention over Configuration</a> ce qui limite grandement (voire supprime) les longs fichiers de configuration XML que vous connaissez peut-être.
 </p>
+
+<div class="alert-message block-message info">
 <p>
-<span class="label important">A Noter</span> : Si Play est un framework MVC basé sur la JVM, il n'est pas pour autant un framework J2EE. En effet, 
-il n'implémente pas la norme Servlet puisqu'il ne se base pas sur un serveur d'application mais sur un serveur HTTP simple.
+<span class="label notice mgr">Note</span> Bien que Play! soit un framework MVC basé sur la JVM, il n'est pas pour autant un framework JEE. En effet, 
+il n'implémente pas la norme Servlet. Ainsi, une application Play! ne nécessite pas de serveur d'application ou de conteneur de Servlet, un serveur HTTP suffit.
 Qu'est-ce que cela change concrètement ? Et bien pas grand-chose. Votre application pourra générer un WAR classique, que vous pourrez déployer 
-(en mode explosé uniquement) dans la plupart des serveurs d'application.
+(en mode explosé uniquement) dans la plupart des serveurs d'applications.
 </p>
+</div>
 
 <div class="row">
 	<div class="span-one-third">
@@ -31,7 +34,7 @@ Qu'est-ce que cela change concrètement ? Et bien pas grand-chose. Votre applica
 			<li>Possibilité de démarrer un projet en deux lignes de commande</li>
 			<li>Possibilité de générer la base de données à partir de vos objets <em>model</em></li>
 			<li>Rechargement à chaud des modifications</li>
-			<li>Identification direct de la ligne en erreur en cas d'erreur</li>
+			<li>Messages d'erreur plus explicites</li>
 			<li>...</li>
 		</ol>
 	</div>

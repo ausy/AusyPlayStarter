@@ -1,4 +1,4 @@
-<h2>Bienvenue sur le StarterKi Ausy pour Play!Framework</h2>
+<h2>Bienvenue sur le StarterKit Ausy pour Play!Framework</h2>
 <p>Si vous lisez cette page c'est que vous avez correctement installé Play!Framework et réussi à lancer le StarterKit Ausy <br />
 Ce StarterKit a bien sur pour objectif packager quelques classes et modules intéressants afin de vous aidez à commencer une application <b>Play!</b> 
 mais il contient également un support de formation se basant sur le mini-projet <strong>AusyPlay</strong> accessible sur github 
@@ -10,40 +10,49 @@ pouvez supprimer tous ce qui concerne cette documentation et ne garder qu'un Sta
 l'emploi. Dans le cas contraire il est conseillé de récupérer le projet support pour pouvoir démarrer
 l'application et voir un peu comment tout cela fonctionne.
 </p>
-<p>
-<span class="label notice">Note</span> Afin que vous puissiez démarrer en même temps le projet <strong>AusyPlay</strong> et le StarterKit, 
-le port du StarterKit a été positionné sur 9001 (et le port JPDA sur 8001), ce qui implique que pour accéder à l'application StarterKit vous dévrez
-utiliser l'adresse <a>http://localhost:9001</a>
-</p>
+
+<div class="alert-message block-message info">
+	<p>
+	<span class="label notice mgr">Note</span> Afin que vous puissiez démarrer en même temps le projet <strong>AusyPlay</strong> et le StarterKit, 
+	le port du StarterKit a été positionné sur 9001 (et le port JPDA sur 8001). Ainsi, vous accédez à l'application StarterKit à l'adresse : <code><a href="http://localhost:9001">http://localhost:9001</a></code>
+	</p>
+</div>
 
 <h3>Contenu</h3>
-<p>Ce StarterKit est basé sur la version 1.2.4 de <a href="playframework.org">Play!Framework</a> (en RC3 au moment de rédaction de ces lignes) et il 
+<p>Ce StarterKit est basé sur la version 1.2.4 de <a href="http://playframework.org" target="_blank">Play!Framework</a> (en RC3 au moment de rédaction de ces lignes) et il 
 contient les éléments suivants : </p>
 <dl>
     <dt>Le module CRUD</dt>
     <dd>Ce module permet de générer simplement des pages de visualisation, création, modification et suppression de vos objets <em>model</em></dd>
+    <br>
     <dt>Le module Secure</dt>
-    <dd>Ce module permet créer un page d'identification et de gérer des profiles utilisateurs pour sécuriser l'accès à votre application</dd>
+    <dd>Ce module permet créer une page d'identification et de gérer des profiles utilisateurs pour sécuriser l'accès à votre application</dd>
+    <br>
     <dt>Le module Guice</dt>
     <dd>Ce module permet d'utiliser Guice pour gérer l'injection de dépendance dans votre projet</dd>
+    <br>
     <dt>La version 1.5.2 de JQuery</dt>
     <dd>JQuery est une librairie javascript assez géniale, si vous ne savez pas de quoi il s'agit, rendez-vous sur 
-    <a href="jquery.com">JQuery</a></dd>
+    <a href="http://jquery.com" target="_blank">JQuery</a></dd>
+    <br>
     <dt>La feuille de style <em>Bootstrap Twitter</em></dt>
     <dd>Cette feuille de style vous permet de donner simplement et rapidement un peu d'allure à votre application. Pour apprendre à l'utiliser, 
-    rendez-vous sur <a href="http://twitter.github.com/bootstrap/">Bootstrap Twitter</a>. Cette page documentation utilise quelques éléments de cette 
+    rendez-vous sur <a href="http://twitter.github.com/bootstrap/" target="_blank">Bootstrap Twitter</a>. Cette page documentation utilise quelques éléments de cette 
     feuille de style.</dd>
+    <br>
     <dt>La classe JPQLHelper</dt>
     <dd>Cette classe, développée en interne vous aidera à réaliser vos requêtes JPQL dynamiques en gérant notamment le cas des paramètres 
     nuls ou vides.</dd>
+    <br>
     <dt>Le support de formation basé sur le projet <em>AusyPlay</em></dt>
-    <dd>Vous trouverez en plus des explications globales, des exemples de classes de test unitaires et fonctionnels, des Jobs, 
-    des classes de base pour vos models ou vos controlleurs, un exemple d'envoi de mail ou d'utilisation de WebSocket ...</dd>
+    <dd>Vous trouverez en plus des explications globales, des exemples de classes de tests unitaires et fonctionnels, des Jobs, 
+    des classes de base pour vos models ou vos controleurs, un exemple d'envoi de mail ou d'utilisation de WebSocket ...</dd>
 </dl>
+<br>
 
 <h3>Objectifs</h3>
 <p>L'objectif de ce StaterKit est donc double : </p>
 <ol>
-    <li>Proposer quelques outils supplémentaires pour pouvoir démarrer votre projet encore plus rapidement.</li>
+    <li>Proposer quelques outils supplémentaires pour pouvoir démarrer votre projet play! encore plus rapidement.</li>
     <li>Proposer une présentation de Play!Framework ainsi qu'un support de formation basé sur le projet AusyPlay</li>
 </ol>

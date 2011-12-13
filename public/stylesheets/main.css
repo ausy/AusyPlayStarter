@@ -5,3 +5,7 @@
 body > div.container img {
 	width: 100%
 }
+
+span.mgr {
+	margin.right: 5px
+}
