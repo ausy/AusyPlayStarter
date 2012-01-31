@@ -1,18 +1,53 @@
 <h2>La page "Ajouter BD"</h2>
 <br />
+<p>
+Comment gérer une collection de BD sans implémenter l'ajout de BD ?
+</p>
+<p>
+L'ajout de livre et/ou de collection va nous permettre d'utiliser les formulaires, la validation des champs saisis ainsi que les exceptions qui peuvent être nécessaires.
+</p>
 
 <h3>L'écran initial : quand on a cliqué sur le menu</h3>
 <br />
 <img alt="Ajouter BD, écran initial" src="@{'/public/images/addBd_Initial.PNG'}" width="100%" />
 <br />
 <p>
+L'écran initial permet de créer une BD n'appartenant pas nécessairement à une série connue.<br>
+Au niveau du contrôleur il ne s'agit que de charger les données pour la liste déroulante.
 </p>
 
-<p>
-Ci-dessous le code du controleur  : <code>BookCtrl</code>
-</p>
-<pre class="prettyprint">
-</pre>
+<h4>Comment on arrive à cet écran ?</h4>
+<ul>
+  <li>
+	<p>
+	Tout d'abord, la page contenant la définition du menu : <code>main.html</code>
+	</p>
+	<pre class="prettyprint">
+	&lt;li&gt;&lt;a href="&#64;{BookCtrl.prepareAdd}"&gt;Ajouter BD&lt;/a&gt;&lt;/li&gt;
+	</pre>
+	<p>
+	Le clic sur le menu nous dirige vers la méthode <code>prepareAdd</code> de <code>BookCtrl</code>.
+	</p>
+  </li>
+  <li>
+	<p>
+	Ensuite, le fichier <em>routes</em>
+	<pre>
+	GET     /book/prepareAdd                            BookCtrl.prepareAdd
+	</pre>
+  </li>
+  <li>
+	<p>
+	Enfin, le code de la méthode dans le controleur  : <code>BookCtrl</code>
+	</p>
+	<pre class="prettyprint">
+		public static void prepareAdd() {
+			List<Serie> listeSeries = Serie.find("order by name").fetch();
+			render(listeSeries);
+		}
+	</pre>
+  </li>
+</ul>
 
 
 <h3>Un peu de dynamisme : le titre de la nouvelle série joue a cache cache !</h3>
@@ -20,20 +55,250 @@ Ci-dessous le code du controleur  : <code>BookCtrl</code>
 <img alt="Sous-Menu Tous" src="@{'/public/images/addBd_SelectedSerie.PNG'}" width="100%" />
 <br />
 <p>
+Si la série à laquelle la BD que l'on souhaite ajouter est présente dans la liste, il n'est pas nécessaire de l'ajouter dans le système, un tout petit peu de dynamisme pour que ce soit beau.
 </p>
 
+<h4>Comment on a fait ca ?</h4>
+<p>
+Il s'agit en fait d'un peu de javascript grandement simplifié par l'utilisation de JQuery.
+</p>
+<pre class="prettyprint">
+	$('#book_serie_id').change(function () {
+		toggleSerie();
+	});
+	
+	$('#book_serie_id').keyup(function () {
+		toggleSerie();
+	});
+	
+	function toggleSerie() {
+		if ($('#book_serie_id option:selected').val().length > 0 ) {
+			$('#serieFields').hide('slow');
+			$('.newSerieName').attr('disabled', 'disabled');
+		} else {
+			$('#serieFields').show('slow');
+			$('.newSerieName').removeAttr('disabled');
+		}
+	};
+</pre>
+
+<div class="alert-message block-message info">
+<p>
+<span class="label notice mgr">Note</span> Oui, c'est vrai, ca n'a rien à voir avec Play!Framework...mais c'est beau ! [love JQuery].
+</p>
+</div>
 
 <h3>Votre mission si vous l'acceptez : passer la validation</h3>
 <br />
 <img alt="Sous-Menu Tous" src="@{'/public/images/addBd_ValidationError.PNG'}" width="100%" />
 <br />
 <p>
+Bon, d'accord : quand c'est beau, c'est bien !<br> 
+Mais comment ca se passe si je ne saisis rien ? Ou si je saisis n'importe quoi ? Ou si je saisis une BD ou une série qui existe déjà ? Un code ISBN invalide...<br>
+C'est la validation qui va nous sauver !
 </p>
+
+<h4>La validation comment ca marche ?</h4>
+<p>
+On peut le faire en javascript...c'est vrai ! Malgré tout une validation côté serveur est indispensable, le javascript pouvant être désactivé ou simplement pas utilisé.<br>
+Coté serveur, ca signifie dans le controleur ! C'est vrai, mais pas seulement. Des annotations permettent de définir les contraintes liées aux attribruts des objets du domaine.
+</p>
+
+<pre class="prettyprint">
+public class Book extends BaseModel {
+
+	private static final long serialVersionUID = 1L;
+
+	@Required
+	public String title;
+
+	@Required
+	@Min(1)
+	public Long number;
+
+	@ManyToOne
+	public Serie serie;
+
+	@Match("[0-9]{10,13}")
+	public String isbn;
+
+	@Override
+	public String toString() {
+		return this.number + " - " + this.title;
+	}
+
+	...
+}
+</pre>
+<p>
+Comme vous le voyez, les propriétés disposent d'annotations décrivant les contraintes à respecter pour que l'objet soit valide : <br><code>@Required</code>, <code>@Match("[0-9]{10,13}")</code>
+</p>
+
+<h4>Ca marche pas !</h4>
+<p>
+J'ai bien tout mis des annotations partout dans mes objets et ca ne valide rien ! <b>Ca ne marche pas !</b><br>
+En fait, ca ne fait pas tout ! Il faut aussi que le controleur sache qu'il faut vérifier ces contraintes.
+ Pour ce faire il convient de préciser <code>@Valid</code> devant les arguments à valider.
+</p>
+<pre class="prettyprint">
+	public static void addBook(final @Valid Book book)
+</pre>
+
+<p>
+Bon, ca valide ce que j'ai indiqué à mon objet, ici <em>Book</em>.<br>
+<b>Mais ca n'est pas tout !</b><br>
+Si j'ajoute une BD d'une série qui n'est pas présente dans la liste, la nom de la série devrait alors être obligatoire !<br>
+Et puis, si c'est un nom de série qui existe déjà, je ne veux pas qu'il soit créé à nouveau !<br>
+Et puis, si le titre de la BD existe déjà, il faudrait me le dire pour que je vérifie si je me suis trompé !<br>
+Et puis, ...<br><br>
+D'accord, d'accord... voila comment tous ces contrôles sont implémentés ici. Notez l'utilisation de <code>Validation</code> fournit par Play!Framework.
+</p>
+<ul>
+  <li>
+	<p>
+	Des controles peuvent être ajoutés par le biais d'annotations standard : 
+	</p>
+	<pre class="prettyprint">
+		Validation.required("book.serie.name", book.serie.name);
+	</pre>
+  </li>
+  <li>
+	<p>
+	Des erreurs peuvent être ajoutés suite à un controle spécifique : 
+	</p>
+	<pre class="prettyprint">
+		if (serie != null) {
+			Validation.addError("book.serie.name",
+					"La série existe déjà",
+					ArrayUtils.EMPTY_STRING_ARRAY);
+		}
+	</pre>
+  </li>
+  <li>
+	<p>
+	Les messages d'erreur peuvent être personnalisés : 
+	</p>
+	<pre class="prettyprint">
+		if (!Validation.errors("book.isbn").isEmpty()) {
+			flash.put("error_isbn", Messages.get("error.book.isbn.msg"));
+		}
+	</pre>
+  </li>
+  <li>
+  	<p>
+  	Il s'agit là de quelques exemples, pour plus de détails consultez la documentation de <a href="http://playframework.org" target="_blank">Play!Framework</a>.
+  	</p>
+  </li>
+</ul>
+
+<p>
+Le code complet de notre controleur : 
+</p>
+<pre class="prettyprint">
+	public static void addBook(final @Valid Book book) {
+		// Serie's name is required if it's a new serie that has to be created
+		if (book.serie.id == null) {
+			Validation.required("book.serie.name", book.serie.name);
+
+			if (book.serie.name != null) {
+				Serie serie = Serie.find("byName", book.serie.name).first();
+				if (serie != null) {
+					Validation.addError("book.serie.name",
+							"La série existe déjà",
+							ArrayUtils.EMPTY_STRING_ARRAY);
+				}
+			}
+		}
+
+		// Validation errror treatment
+		if (Validation.hasErrors()) {
+
+			if (Logger.isDebugEnabled()) {
+				for (play.data.validation.Error error : Validation.errors()) {
+					Logger.debug(error.message() + "  " + error.getKey());
+				}
+			}
+
+			// Specific treatment for isbn, just to provide example
+			if (!Validation.errors("book.isbn").isEmpty()) {
+				flash.put("error_isbn", Messages.get("error.book.isbn.msg"));
+			}
+
+			params.flash(); // add http parameters to the flash scope
+			Validation.keep(); // keep the errors for the next request
+		} else {
+
+			// Create serie is needed
+			if (book.serie.id == null) {
+				book.serie.create();
+			}
+
+			book.create();
+
+			// Send WebSocket message
+			WebSocket.liveStream.publish(MessageFormat.format(
+					"La BD ''{0}'' a été ajoutée dans la série ''{1}''",
+					book.title, book.serie.name));
+
+			flash.put("message",
+					"La BD a été ajoutée, vous pouvez créer à nouveau.");
+		}
+
+		BookCtrl.prepareAdd(); // Redirection toward input form
+	}
+</pre>
+
+<p>
+Bon, à présent nous disposons des données saisies en entrée de notre méthode du controleur, ces données sont validées comme on le voulait et il y a même les messages d'erreurs les plus explicites du monde.
+</p>
+<h4>Mais je ne les vois pas sur mon écran !</h4>
+<p>
+Arf...j'avais oublié de modifier la vue pour qu'elle affiche ces messages s'ils existent. Qu'à cela ne tienne !<br>
+Les extraits qui suivent proviennent de <em>prepareAdd.html</em>
+</p>
+
+<p>
+Le gros bandeau rouge, quand il y a une erreur.
+</p>
+<pre class="prettyprint">
+	&#35;{ifErrors}
+	  &lt;div class="alert-message error" data-alert="alert"&gt;
+	   &lt;a href="#" class="close"&gt;×&lt;/a&gt;
+	   &lt;p&gt;&lt;strong&gt;Oops…&lt;/strong&gt; Veuillez corriger les erreurs indiquées avant d essayer à nouveau.&lt;/p&gt;
+	  &lt;/div&gt;
+	&#35;{/ifErrors}
+</pre>
+
+<p>
+Le message d'erreur lié à un champ de saisie.
+</p>
+<pre class="prettyprint">
+	&#35;{field 'book.serie.name'}
+	&lt;p&gt;
+	  &lt;label&gt;Nouvelle série : &lt;/label&gt;
+	  &lt;input
+	      type="text" 
+	      id="&#36;{field.id}" 
+	      name="&#36;{field.name}" 
+	      value="&#36;{flash[field.name]}" 
+	      class="&#36;{field.errorClass} newSerieName"&gt;
+	  &lt;span class="error"&gt;&#36;{play.data.validation.Validation.errors('book.serie.name').join(', ')}&lt;/span&gt;
+	&lt;/p&gt;
+	&#35;{/}
+</pre>
 
 <h3>Félicitations : la BD est créée, on recommence ?</h3>
 <br />
 <img alt="Sous-Menu Tous" src="@{'/public/images/addBd_WellDone.png'}" width="100%" />
 <br />
 <p>
+Ca y est, vous voila prèt à utiliser les formulaires ainsi qu'à mettre en place des validations adaptées.<br>
+Puisque tous les champs étaient valides, la création a fonctionné et nous le faisons apparaitre à l'écran.<br>
 </p>
+
+<div class="alert-message block-message info">
+<p>
+<span class="label notice mgr">Exercie</span> trouvez où se cachent les instructions permettant d'afficher ce message vous invitant à créer à nouveau des BD.
+</p>
+</div>
 
