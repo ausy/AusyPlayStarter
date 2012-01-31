@@ -9,7 +9,7 @@ public class Bootstrap extends Job<Object> {
 
 	@Override
 	public void doJob() {
-		Fixtures.deleteDatabase();
-		Fixtures.loadModels("initial-data/all.yml");
+		//Fixtures.deleteDatabase();
+		//Fixtures.loadModels("initial-data/all.yml");
 	}
 }
